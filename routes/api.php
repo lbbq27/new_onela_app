@@ -13,6 +13,9 @@ Route::get('user',[UserController::class, 'index']); //It shows all users
 Route::post('user/register',[UserController::class, 'store']); //It stores a new user
 Route::post('user/login',[UserController::class, 'auth']); //It authenticates a user
 Route::post('user/logout',[UserController::class, 'logout'])->middleware('auth:sanctum'); //It logs out a user
+Route::get('user/{id}', [UserController::class, 'show']); //It shows a specific user by ID
+Route::put('user/{id}', [UserController::class, 'update']); //It updates a specific user by ID
+Route::delete('user/{id}', [UserController::class, 'destroy']); //It deletes a specific user by ID
 
 
 

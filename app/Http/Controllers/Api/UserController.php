@@ -12,25 +12,47 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    //It Shows all users
+    //It Shows all users ------------------------------------------------------
     public function index()
     {
         $users = User::all();
+        //$users = User::select('id', 'name', 'email')->get();  // Select specific fields from the users table
         return response()->json($users);
     }
 
-    //It Stores a new user
+
+
+
+    //It Stores a new user  -------------------------------------------------------
     public function store(StoreUserRequest  $request)
     {
-        if ($request->validated()) {
-            User::create($request->all());
-            return response()->json(['message' => 'User Registered Successfully.'], 201);
-        } else {
-            return response()->json(['message' => 'Invalid user data.'], 400);
-        }
+         if ($request->validated()) {
+             User::create($request->all());
+             return response()->json(['message' => 'User Registered Successfully.'], 201);
+         } else {
+             return response()->json(['message' => 'Invalid user data.'], 400);
+         }
+
+        //Another way to do it without validations: >>>>>>>>>>>>>>
+
+        // $user = User::create([
+        //     'name' => $request->name,
+        //     'email' => $request->email,
+        //     'password' => Hash::make($request->password),
+        // ]);
+
+        // return response()->json([
+        //     'user' => $user->name,
+        //     'email' => $user->email,
+        // ]);
+
     }
 
-    //It Authenticates a user
+
+
+
+
+    //It Authenticates a user -------------------------------------------------------
     public function auth(AuthUserRequest $request){
         if ($request->validated()) {
 
@@ -56,5 +78,39 @@ class UserController extends Controller
         return response()->json(['message' => 'Logged out successfully.'], 200);
     }
 
+    //It shows a specific user by ID -------------------------------------------------------
+    public function show(string $id)
+    {
+        $user = User::find($id);
+        if ($user) {
+            return response()->json($user);
+        } else {
+            return response()->json(['message' => 'User not found.'], 404);
+    }
+
     
+    }
+
+    //It updates a specific user by ID -------------------------------------------------------
+    public function update(Request $request, string $id){
+        $user = User::find($id);
+        if ($user) {
+            $user->update($request->all());
+            return response()->json(['message' => 'User updated successfully.'], 200);
+        } else {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+    }
+
+    public function destroy(string $id)
+    {
+        $user = User::find($id);
+        if ($user) {
+            $user->delete();
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+        } else {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+    }
+
 }
